@@ -1,3 +1,4 @@
-# BNF Search Tool Changelog
+# Changelog
 
-## [Initial Version] - {PR_MERGE_DATE}
+## [Initial Release] - 2025-12-11
+- Initial release of BNF Search tool.
