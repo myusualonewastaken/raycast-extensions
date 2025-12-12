@@ -1,5 +1,5 @@
 import { Form, ActionPanel, Action, showToast, Toast, open } from "@raycast/api";
-import fetch from "node-fetch";
+import { showFailureToast } from "@raycast/utils";
 
 type Values = {
   drug: string;
@@ -27,7 +27,8 @@ export default function Command() {
     const searchUrl = `https://${baseDomain}/search?q=${encodeURIComponent(drug)}`;
 
     try {
-      // 3. Check if page exists with a FAKE USER AGENT
+      // 3. Check if page exists
+      // We send a User-Agent header to ensure the request is treated as a standard browser request.
       const response = await fetch(directUrl, {
         method: "HEAD",
         headers: {
@@ -46,15 +47,11 @@ export default function Command() {
         toast.title = "Opening Search Results";
       }
     } catch (error) {
-      // FIX: Now we actually use the error variable!
-      // 1. Log it to the debug console
-      console.error("BNF Check Failed:", error);
-
-      // 2. Attach the specific error message to the toast so we can see what happened
+      // If the internet is down or something else breaks, safe fallback to search
       await open(searchUrl);
-      toast.style = Toast.Style.Failure;
-      toast.title = "Error checking link, opening search";
-      toast.message = error instanceof Error ? error.message : String(error);
+
+      // Simplify error handling using Raycast's utility
+      await showFailureToast(error, { title: "Error checking link, opening search" });
     }
   }
 
